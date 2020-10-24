@@ -1,0 +1,54 @@
+.container{
+    margin: 0 auto;
+    width: 100%;
+    max-width: 500px;
+}
+
+.container .page-title{
+    text-align: center;
+}
+
+.game-board {
+    width: 100%;
+    max-width: 400px;
+    height: 400px;
+    margin: 0 auto;
+    background-color: #34495e;
+    color: #fff;
+    border: 6px solid #2c3e50;
+    border-radius: 10px;
+    display: grid;
+    grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+}
+
+.game-box {
+  border: 6px solid #2c3e50;
+  border-radius: 2px;
+  font-family: Helvetica;
+  font-weight: bold;
+  font-size: 4em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.X-winner{
+    background-color: #08ee4df6;
+}
+.O-winner{
+    background-color: #ff0000;
+}
+.game-indicator{
+    text-align: center;
+}
+
+.game-indicator h3.machinePlayer span{
+    background-color: #ff0000;
+    color: #fff;
+    padding: 5px 10px;
+}
+.game-indicator h3.humanPlayer span{
+    background-color: #08ee4df6;
+    color: #fff;
+    padding: 5px 10px;
+}

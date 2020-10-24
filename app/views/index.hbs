@@ -1,0 +1,21 @@
+<div class="container">
+    <h1 class="page-title"> Tic Tac Toe</h1>
+    <div class="game-board">
+        {{#each grid}}
+            <div id="game-box-{{this}}" 
+            class="game-box active" 
+            data-index={{this}}></div>
+        {{/each}}
+    </div>
+
+    <div class="game-indicator">
+        <h3 class="humanPlayer">
+           <span>{{humanPlayer}}</span> For Human Player
+        </h3>
+        <h3 class="machinePlayer">
+            <span>{{machinePlayer}}</span> For Machine Player
+        </h3>
+        <h2 class="game-status"></h2>
+        <button class="game-restart">Restart Game</button>
+    </div>
+</div>

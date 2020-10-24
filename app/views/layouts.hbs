@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>{{title}}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <link rel='stylesheet' href='/static/css/style.css'>
+</head>
+<body>
+  {{{body}}}
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+  $(function(){
+    var socket = io();
+    var currentActiveBox = [];
+    
+   // var activeBoxesArr = [];
+      $('.game-restart').click(function(){
+        /*$('.game-box').each(function(index, val){
+          $(this).removeAttr('data-player');
+          $(this).html('');
+          $(this).addClass('active');
+          $(this).removeClass('X-winner O-winner');
+        });
+        $('.game-status').html('');*/
+        location.reload();
+      })
+     
+      $('.game-box').click(function(e){
+        if ($(this).hasClass('active')) {
+          $('.game-box.active').each(function(index, val){
+            currentActiveBox[index] = $(this).data('index');
+          });
+
+          let indexOfBox = currentActiveBox.indexOf($(this).data('index'));
+          
+          currentActiveBox.splice(indexOfBox,1);
+          
+          //console.log($(this).data('index'), currentActiveBox);
+          socket.emit('humanPlayerTurn',{ 
+            id:$(this).data('index'), 
+            activeBoxes: currentActiveBox 
+          } );
+
+          $(this).html('{{currentPlayer}}');
+          $(this).removeClass('active');
+          $(this).attr('data-player', '{{currentPlayer}}');
+
+          let currentPlayerBoxes = [];
+          $('.game-box').each(function(index, val){
+            
+            if( $(this).data('player') == '{{currentPlayer}}' ){
+              currentPlayerBoxes.push($(this).data('index'));
+            } else {
+              currentPlayerBoxes.push('');
+            }
+          });
+
+          ///console.log(currentPlayerBoxes);
+
+          socket.emit('checkWinner', {
+            player: '{{currentPlayer}}',
+            data: currentPlayerBoxes
+          });
+
+        }
+        
+      });
+
+      socket.on('machinePlayerTurn', function(gridBoxData){
+        
+        if(gridBoxData.gameStatus == 'active' && gridBoxData.id >= 0){
+          $('#game-box-'+gridBoxData.id).text(gridBoxData.value);
+          $('#game-box-'+gridBoxData.id).removeClass('active');
+          $('#game-box-'+gridBoxData.id).data('player', gridBoxData.value);
+          currentActiveBox = [];
+
+          $('.game-box.active').each(function(index, val){
+            currentActiveBox[index] = $(this).data('index');
+          });
+
+          let machinePlayerBoxes = [];
+          $('.game-box').each(function(index, val){
+            
+            if( $(this).data('player') == '{{machinePlayer}}' ){
+              machinePlayerBoxes.push($(this).data('index'));
+            } else {
+              machinePlayerBoxes.push('');
+            }
+          });
+          ///console.log(machinePlayerBoxes);
+
+          socket.emit('checkWinner', {
+            player: '{{machinePlayer}}',
+            data: machinePlayerBoxes
+          });
+
+        } else {
+          currentActiveBox = [];
+          $('.game-status').html('Game Finished!!');
+        }
+       
+        
+        
+      });
+
+      socket.on('resultDeclare', function(resultData){
+        console.log(resultData);
+        let winMessage = "Player "+resultData.player+" Win the game!!";
+        $('.game-status').html(winMessage);
+        for(i =0; i < resultData.resultBoxes.length; i++){
+          $('#game-box-'+resultData.resultBoxes[i]).addClass(resultData.player+'-winner');
+        }
+
+        $('.game-box').removeClass('active');
+        currentActiveBox = [];
+      });
+  })
+  
+</script>
+</body>
+</html>
